@@ -1,0 +1,34 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+
+metadata:
+  name: failure-stream
+  namespace: default
+
+spec:
+  type: Python
+  mode: cluster
+
+  image: failure-spark:v19
+  imagePullPolicy: Never
+
+  mainApplicationFile: local:///app/app.py
+
+  sparkVersion: "3.5.1"
+
+  sparkConf:
+    "spark.driver.extraJavaOptions": "-Divy.cache.dir=/tmp -Divy.home=/tmp"
+    "spark.executor.extraJavaOptions": "-Divy.cache.dir=/tmp -Divy.home=/tmp"
+
+  restartPolicy:
+    type: Never
+
+  driver:
+    cores: 1
+    memory: "1g"
+    serviceAccount: spark-operator-spark
+
+  executor:
+    instances: 1
+    cores: 1
+    memory: "1g"
